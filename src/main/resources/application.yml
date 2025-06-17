@@ -1,0 +1,37 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: backend-tracking
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:5432/
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 40        # Optimized for 28 cores
+      minimum-idle: 15
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# Logging Configuration
+logging:
+  pattern:
+    console: '%d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level %logger{36} - [traceId=%X{traceId}] %msg%n'
+    file: '%d{dd-MM-yyyy HH:mm:ss} [%thread] %-5level %logger{36} - [traceId=%X{traceId}] %msg%n'
+  file:
+    name: ./logs/tracking-product.log
+  level:
+    org.springframework.web: INFO
