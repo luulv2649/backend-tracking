@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
 
     @Id
@@ -35,11 +39,11 @@ public class Product {
     private Integer isNotify = 1;
 
     @Column(name = "created_at")
-    @CreationTimestamp
+    @CreatedDate
     private LocalDate createdAt;
 
     @Column(name = "updated_at")
-    @UpdateTimestamp
+    @LastModifiedDate
     private LocalDate updatedAt;
 
     // Constructor cho việc tạo mới product

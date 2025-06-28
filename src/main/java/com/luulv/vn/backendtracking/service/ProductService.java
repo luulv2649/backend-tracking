@@ -1,9 +1,13 @@
 package com.luulv.vn.backendtracking.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luulv.vn.backendtracking.dto.ProductRequestDto;
 import com.luulv.vn.backendtracking.dto.ProductResponseDto;
+import com.luulv.vn.backendtracking.dto.ProductSearchRequestDto;
+import com.luulv.vn.backendtracking.dto.UserResponseDTO;
 import com.luulv.vn.backendtracking.entity.Product;
+import com.luulv.vn.backendtracking.entity.User;
 import com.luulv.vn.backendtracking.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,8 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    private final ObjectMapper mapper;
 
     /**
      * Tạo sản phẩm mới
@@ -197,6 +203,21 @@ public class ProductService {
         long inactiveNotifications = productRepository.findByIsNotify(0).size();
 
         return new ProductStatistics(totalProducts, activeNotifications, inactiveNotifications);
+    }
+
+    public Page<ProductResponseDto> search(ProductSearchRequestDto request) {
+        // Tạo Pageable object
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+
+        // Thực hiện tìm kiếm
+        Page<Product> userPage = productRepository.search(
+                request.getType(),
+                request.getUrl(),
+                request.getIsNotify(),
+                pageable
+        );
+
+        return userPage.map(x -> mapper.convertValue(x, ProductResponseDto.class));
     }
 
     // Inner class cho statistics

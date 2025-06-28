@@ -1,9 +1,11 @@
 package com.luulv.vn.backendtracking.dto;
 
 import com.luulv.vn.backendtracking.entity.Product;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 

@@ -4,6 +4,9 @@ package com.luulv.vn.backendtracking.controller;
 import com.luulv.vn.backendtracking.dto.ApiResponse;
 import com.luulv.vn.backendtracking.dto.ProductRequestDto;
 import com.luulv.vn.backendtracking.dto.ProductResponseDto;
+import com.luulv.vn.backendtracking.dto.ProductSearchRequestDto;
+import com.luulv.vn.backendtracking.dto.UserResponseDTO;
+import com.luulv.vn.backendtracking.dto.UserSearchRequest;
 import com.luulv.vn.backendtracking.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -190,25 +193,6 @@ public class ProductController {
     }
 
     /**
-     * Tìm kiếm sản phẩm theo URL
-     */
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<ProductResponseDto>>> searchProducts(
-            @RequestParam String keyword) {
-
-        log.info("Received request to search products with keyword: {}", keyword);
-
-        try {
-            List<ProductResponseDto> products = productService.searchProductsByUrl(keyword);
-            return ResponseEntity.ok(ApiResponse.success(products));
-        } catch (Exception e) {
-            log.error("Error searching products: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Lỗi khi tìm kiếm sản phẩm", e.getMessage()));
-        }
-    }
-
-    /**
      * Lấy thống kê sản phẩm
      */
     @GetMapping("/statistics")
@@ -223,5 +207,13 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Lỗi khi lấy thống kê", e.getMessage()));
         }
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<ApiResponse<Page<ProductResponseDto>>> search(
+            @RequestBody ProductSearchRequestDto request
+    ) {
+        Page<ProductResponseDto> response = productService.search(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

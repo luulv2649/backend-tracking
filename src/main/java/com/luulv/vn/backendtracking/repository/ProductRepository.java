@@ -1,6 +1,7 @@
 package com.luulv.vn.backendtracking.repository;
 
 import com.luulv.vn.backendtracking.entity.Product;
+import com.luulv.vn.backendtracking.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,4 +53,20 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Lấy danh sách các type duy nhất
     @Query("SELECT DISTINCT p.type FROM Product p WHERE p.type IS NOT NULL ORDER BY p.type")
     List<String> findDistinctTypes();
+
+    @Query(value = "SELECT * FROM product p WHERE " +
+            "(:type IS NULL OR p.type = :type) AND " +
+            "(:url IS NULL OR LOWER(CAST(p.url AS TEXT)) LIKE LOWER(CONCAT('%', :url, '%'))) AND " +
+            "(:isNotify IS NULL OR p.is_notify = :isNotify)",
+            countQuery = "SELECT COUNT(*) FROM product p WHERE " +
+                    "(:type IS NULL OR p.type = :type) AND " +
+                    "(:url IS NULL OR LOWER(CAST(p.url AS TEXT)) LIKE LOWER(CONCAT('%', :url, '%'))) AND " +
+                    "(:isNotify IS NULL OR p.is_notify = :isNotify)",
+            nativeQuery = true)
+    Page<Product> search(
+            @Param("type") String type,
+            @Param("url") String url,
+            @Param("isNotify") Integer isNotify,
+            Pageable pageable
+    );
 }

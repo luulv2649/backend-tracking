@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class ProductRequestDto {
 
     @NotBlank(message = "URL không được để trống")
-    @Size(max = 255, message = "URL không được vượt quá 255 ký tự")
     private String url;
 
     @Size(max = 255, message = "Type không được vượt quá 255 ký tự")
